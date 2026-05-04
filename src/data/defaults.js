@@ -2,11 +2,15 @@ export const DEFAULT_MAINS = [
   { id: 'm1', name: 'Schnitzel',       nameHe: 'שניצל',        emoji: '🥩', type: 'main' },
   { id: 'm2', name: 'Nuggets',          nameHe: 'נאגטס',        emoji: '🍗', type: 'main' },
   { id: 'm3', name: 'Grilled Chicken',  nameHe: 'עוף על האש',  emoji: '🍖', type: 'main' },
-  { id: 'm4', name: 'Fish Sticks',      nameHe: 'אצבעות דג',   emoji: '🐟', type: 'main' },
+  { id: 'm4', name: 'Tuna',             nameHe: 'טונה',         emoji: '🐟', type: 'main' },
   { id: 'm5', name: 'Salmon',           nameHe: 'סלמון',        emoji: '🐠', type: 'main' },
   { id: 'm6', name: 'Meatballs',        nameHe: 'כדורי בשר',   emoji: '🧆', type: 'main' },
   { id: 'm7', name: 'Burger',           nameHe: 'המבורגר',      emoji: '🍔', type: 'main' },
   { id: 'm8', name: 'Shakshuka',        nameHe: 'שקשוקה',       emoji: '🍳', type: 'main' },
+  { id: 'm9', name: 'Omelette',         nameHe: 'אומלט',        emoji: '🥚', type: 'main' },
+  { id: 'm10', name: 'Boiled Egg',      nameHe: 'ביצה קשה',    emoji: '🥚', type: 'main' },
+  { id: 'm11', name: 'Buttered Toast',  nameHe: 'טוסט עם חמאה', emoji: '🍞', type: 'main' },
+  { id: 'm12', name: 'Pastrami',        nameHe: 'פסטרמה',       emoji: '🥓', type: 'main' },
 ]
 
 export const DEFAULT_SIDES = [
