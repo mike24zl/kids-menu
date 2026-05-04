@@ -43,7 +43,7 @@ export default function App() {
 }
 
 function AppInner({ userId }) {
-  const { plan, setSlot, clearSlot, resetWeek, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId)
+  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId)
   const { mains, sides, veggies, desserts, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
@@ -121,6 +121,9 @@ function AppInner({ userId }) {
         weekStart={plan.weekStart}
         parentMode={parentMode}
         onToggleParent={() => setParentMode(p => !p)}
+        onSave={save}
+        isDirty={isDirty}
+        saving={saving}
       />
 
       <DndContext

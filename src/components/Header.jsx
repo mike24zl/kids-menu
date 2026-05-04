@@ -2,7 +2,7 @@ import { formatWeekLabel } from '../utils/dates'
 import { useLang } from '../i18n/LangContext'
 import UserMenu from './UserMenu'
 
-export default function Header({ weekStart, parentMode, onToggleParent }) {
+export default function Header({ weekStart, parentMode, onToggleParent, onSave, isDirty, saving }) {
   const { lang, switchLang, t } = useLang()
 
   return (
@@ -39,6 +39,20 @@ export default function Header({ weekStart, parentMode, onToggleParent }) {
             </button>
           ))}
         </div>
+
+        {/* Save button */}
+        <button
+          onClick={onSave}
+          disabled={!isDirty || saving}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-2xl font-nunito font-bold text-sm transition-all shadow
+            ${isDirty && !saving
+              ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-white text-gray-300 border-2 border-gray-200 cursor-not-allowed'
+            }`}
+        >
+          <span className="text-base">{saving ? '⏳' : '💾'}</span>
+          <span className="hidden sm:inline">{saving ? t.saving : t.save}</span>
+        </button>
 
         {/* Parent toggle */}
         <button

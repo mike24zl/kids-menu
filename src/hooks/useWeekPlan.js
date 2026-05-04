@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getWeekStart } from '../utils/dates'
 
@@ -12,7 +12,8 @@ export function useWeekPlan(userId) {
   const weekStart = getWeekStart()
   const [plan, setPlan] = useState({ weekStart, days: emptyDays() })
   const [loading, setLoading] = useState(true)
-  const timer = useRef(null)
+  const [isDirty, setDirty] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     if (!userId) return
@@ -35,35 +36,33 @@ export function useWeekPlan(userId) {
       })
   }, [userId])
 
-  function persist(days) {
-    clearTimeout(timer.current)
-    timer.current = setTimeout(() => {
-      supabase.from('week_plans').upsert(
-        { user_id: userId, week_start: weekStart, days },
-        { onConflict: 'user_id,week_start' }
-      )
-    }, 400)
-  }
-
   function setSlot(dayIndex, type, itemId) {
-    const next = {
-      ...plan,
-      days: { ...plan.days, [dayIndex]: { ...plan.days[dayIndex], [type]: itemId } },
-    }
-    setPlan(next)
-    persist(next.days)
+    setPlan(prev => ({
+      ...prev,
+      days: { ...prev.days, [dayIndex]: { ...prev.days[dayIndex], [type]: itemId } },
+    }))
+    setDirty(true)
   }
 
   function clearSlot(dayIndex, type) { setSlot(dayIndex, type, null) }
 
   function resetWeek() {
-    const days = emptyDays()
-    setPlan({ weekStart, days })
-    persist(days)
+    setPlan({ weekStart, days: emptyDays() })
+    setDirty(true)
+  }
+
+  async function save() {
+    setSaving(true)
+    await supabase.from('week_plans').upsert(
+      { user_id: userId, week_start: weekStart, days: plan.days },
+      { onConflict: 'user_id,week_start' }
+    )
+    setSaving(false)
+    setDirty(false)
   }
 
   const dessertCount = Object.values(plan.days).filter(d => d.dessert !== null).length
   const mainCount    = Object.values(plan.days).filter(d => d.main !== null).length
 
-  return { plan, setSlot, clearSlot, resetWeek, dessertCount, mainCount, loading }
+  return { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading }
 }
