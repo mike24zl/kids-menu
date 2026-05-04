@@ -22,7 +22,7 @@ import { useWeekPlan } from './hooks/useWeekPlan'
 import { useDishes } from './hooks/useDishes'
 import { useSound } from './hooks/useSound'
 import { useLang } from './i18n/LangContext'
-import { isPast, getWeekDays } from './utils/dates'
+import { isPast, getWeekDays, getWeekStart } from './utils/dates'
 
 const SLOT_TYPES = ['main', 'side', 'veggie', 'dessert']
 
@@ -42,8 +42,17 @@ export default function App() {
   return <AppInner userId={user.id} />
 }
 
+function weekStartFromOffset(offset) {
+  const d = new Date()
+  d.setDate(d.getDate() + offset * 7)
+  return getWeekStart(d)
+}
+
 function AppInner({ userId }) {
-  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId)
+  const [weekOffset, setWeekOffset] = useState(0)
+  const weekStart = weekStartFromOffset(weekOffset)
+
+  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart)
   const { mains, sides, desserts, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
@@ -118,6 +127,10 @@ function AppInner({ userId }) {
     <div className="min-h-screen flex flex-col gap-3 pb-6" dir={t.dir}>
       <Header
         weekStart={plan.weekStart}
+        weekOffset={weekOffset}
+        onPrevWeek={() => setWeekOffset(o => o - 1)}
+        onNextWeek={() => setWeekOffset(o => o + 1)}
+        onToday={() => setWeekOffset(0)}
         parentMode={parentMode}
         onToggleParent={() => setParentMode(p => !p)}
         onSave={save}

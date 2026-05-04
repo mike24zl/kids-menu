@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { getWeekStart } from '../utils/dates'
 
 const EMPTY_DAY = { main: null, side: null, dessert: null }
 
@@ -8,8 +7,7 @@ function emptyDays() {
   return Object.fromEntries(Array.from({ length: 7 }, (_, i) => [i, { ...EMPTY_DAY }]))
 }
 
-export function useWeekPlan(userId) {
-  const weekStart = getWeekStart()
+export function useWeekPlan(userId, weekStart) {
   const [plan, setPlan] = useState({ weekStart, days: emptyDays() })
   const [loading, setLoading] = useState(true)
   const [isDirty, setDirty] = useState(false)
@@ -18,6 +16,9 @@ export function useWeekPlan(userId) {
   useEffect(() => {
     if (!userId) return
     setLoading(true)
+    setDirty(false)
+    setPlan({ weekStart, days: emptyDays() })
+
     supabase
       .from('week_plans')
       .select('days')
@@ -34,7 +35,7 @@ export function useWeekPlan(userId) {
         }
         setLoading(false)
       })
-  }, [userId])
+  }, [userId, weekStart])
 
   function setSlot(dayIndex, type, itemId) {
     setPlan(prev => ({

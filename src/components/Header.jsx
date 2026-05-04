@@ -2,7 +2,12 @@ import { formatWeekLabel } from '../utils/dates'
 import { useLang } from '../i18n/LangContext'
 import UserMenu from './UserMenu'
 
-export default function Header({ weekStart, parentMode, onToggleParent, onSave, isDirty, saving }) {
+export default function Header({
+  weekStart, weekOffset,
+  onPrevWeek, onNextWeek, onToday,
+  parentMode, onToggleParent,
+  onSave, isDirty, saving,
+}) {
   const { lang, switchLang, t } = useLang()
 
   return (
@@ -13,9 +18,34 @@ export default function Header({ weekStart, parentMode, onToggleParent, onSave, 
           <h1 className="font-fredoka text-2xl md:text-3xl text-orange-600 leading-tight">
             {t.title}
           </h1>
-          <p className="font-nunito text-sm font-bold text-orange-400">
-            {formatWeekLabel(weekStart, t.locale)}
-          </p>
+
+          {/* Week navigation */}
+          <div className="flex items-center gap-1 mt-0.5">
+            <button
+              onClick={onPrevWeek}
+              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 transition-colors font-bold"
+            >
+              {t.dir === 'rtl' ? '›' : '‹'}
+            </button>
+            <span className="font-nunito text-sm font-bold text-orange-400">
+              {formatWeekLabel(weekStart, t.locale)}
+            </span>
+            <button
+              onClick={onNextWeek}
+              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 transition-colors font-bold"
+            >
+              {t.dir === 'rtl' ? '‹' : '›'}
+            </button>
+            {weekOffset !== 0 && (
+              <button
+                onClick={onToday}
+                className="px-2 py-0.5 rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-600 font-nunito font-bold text-xs transition-colors"
+              >
+                {t.today}
+              </button>
+            )}
+          </div>
+
           <span className="font-nunito text-xs text-gray-400">v{__APP_VERSION__}</span>
         </div>
       </div>
