@@ -15,6 +15,7 @@ export default function Header({ weekStart, parentMode, onToggleParent }) {
           <p className="font-nunito text-sm font-bold text-orange-400">
             {formatWeekLabel(weekStart, t.locale)}
           </p>
+          <span className="font-nunito text-xs text-gray-400">v{__APP_VERSION__}</span>
         </div>
       </div>
 
