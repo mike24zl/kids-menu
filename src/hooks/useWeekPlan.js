@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { getWeekStart } from '../utils/dates'
 
+const EMPTY_DAY = { main: null, side: null, veggie: null, dessert: null }
 const EMPTY_DAYS = Object.fromEntries(
-  Array.from({ length: 7 }, (_, i) => [i, { dinner: null, dessert: null }])
+  Array.from({ length: 7 }, (_, i) => [i, { ...EMPTY_DAY }])
 )
 
 function freshPlan() {
@@ -14,7 +15,6 @@ function loadPlan() {
     const raw = localStorage.getItem('km_week_plan')
     if (!raw) return freshPlan()
     const plan = JSON.parse(raw)
-    // Auto-reset if we're in a new week
     if (plan.weekStart !== getWeekStart()) return freshPlan()
     return plan
   } catch {
@@ -52,7 +52,7 @@ export function useWeekPlan() {
   }
 
   const dessertCount = Object.values(plan.days).filter(d => d.dessert !== null).length
-  const dinnerCount = Object.values(plan.days).filter(d => d.dinner !== null).length
+  const mainCount    = Object.values(plan.days).filter(d => d.main !== null).length
 
-  return { plan, setSlot, clearSlot, resetWeek, dessertCount, dinnerCount }
+  return { plan, setSlot, clearSlot, resetWeek, dessertCount, mainCount }
 }
