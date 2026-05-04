@@ -1,7 +1,6 @@
 export const POOL_TABS = [
   { type: 'main',    emoji: '🥩' },
   { type: 'side',    emoji: '🍚' },
-  { type: 'veggie',  emoji: '🥦' },
   { type: 'dessert', emoji: '🍰' },
 ]
 

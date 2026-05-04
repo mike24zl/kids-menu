@@ -44,7 +44,7 @@ export default function App() {
 
 function AppInner({ userId }) {
   const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId)
-  const { mains, sides, veggies, desserts, loading: dishesLoading } = useDishes(userId)
+  const { mains, sides, desserts, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
 
@@ -59,12 +59,11 @@ function AppInner({ userId }) {
     useSensor(TouchSensor,   { activationConstraint: { delay: 100, tolerance: 5 } }),
   )
 
-  const pools = { main: mains, side: sides, veggie: veggies, dessert: desserts }
+  const pools = { main: mains, side: sides, dessert: desserts }
 
   const placedIds = {
     main:    new Set(Object.values(plan.days).map(d => d.main).filter(Boolean)),
     side:    new Set(Object.values(plan.days).map(d => d.side).filter(Boolean)),
-    veggie:  new Set(Object.values(plan.days).map(d => d.veggie).filter(Boolean)),
     dessert: new Set(Object.values(plan.days).map(d => d.dessert).filter(Boolean)),
   }
 
@@ -134,12 +133,12 @@ function AppInner({ userId }) {
       >
         <WeekBoard
           plan={plan}
-          pools={{ mains: mains.items, sides: sides.items, veggies: veggies.items, desserts: desserts.items }}
+          pools={{ mains: mains.items, sides: sides.items, desserts: desserts.items }}
           onClear={clearSlot}
         />
 
         <PoolSection
-          pools={{ main: mains.items, side: sides.items, veggie: veggies.items, dessert: desserts.items }}
+          pools={{ main: mains.items, side: sides.items, dessert: desserts.items }}
           placedIds={placedIds}
           dessertCount={dessertCount}
           dessertOverflow={dessertOverflow}

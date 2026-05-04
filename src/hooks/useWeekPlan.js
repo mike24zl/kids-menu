@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { getWeekStart } from '../utils/dates'
 
-const EMPTY_DAY = { main: null, side: null, veggie: null, dessert: null }
+const EMPTY_DAY = { main: null, side: null, dessert: null }
 
 function emptyDays() {
   return Object.fromEntries(Array.from({ length: 7 }, (_, i) => [i, { ...EMPTY_DAY }]))

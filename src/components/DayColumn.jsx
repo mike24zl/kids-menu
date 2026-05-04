@@ -2,7 +2,7 @@ import { DAY_EMOJIS } from '../utils/dates'
 import { useLang } from '../i18n/LangContext'
 import MealSlot from './MealSlot'
 
-const SLOT_TYPES = ['main', 'side', 'veggie', 'dessert']
+const SLOT_TYPES = ['main', 'side', 'dessert']
 
 export default function DayColumn({ dayIndex, date, slots, locked, onClear }) {
   const { t } = useLang()
@@ -22,16 +22,34 @@ export default function DayColumn({ dayIndex, date, slots, locked, onClear }) {
         <span className="font-nunito text-xs font-bold text-gray-400">{dayNum} {month}</span>
       </div>
 
-      {SLOT_TYPES.map(type => (
-        <MealSlot
-          key={type}
-          id={`${dayIndex}-${type}`}
-          type={type}
-          item={slots[type]}
-          locked={locked}
-          onClear={() => onClear(dayIndex, type)}
-        />
-      ))}
+      <MealSlot
+        id={`${dayIndex}-main`}
+        type="main"
+        item={slots.main}
+        locked={locked}
+        onClear={() => onClear(dayIndex, 'main')}
+      />
+      <MealSlot
+        id={`${dayIndex}-side`}
+        type="side"
+        item={slots.side}
+        locked={locked}
+        onClear={() => onClear(dayIndex, 'side')}
+      />
+
+      {/* Hardcoded veggies */}
+      <div className="rounded-xl border-2 border-green-200 bg-green-50 flex items-center justify-center gap-1.5 py-1.5 min-h-[40px]">
+        <span className="text-xl">🥒</span>
+        <span className="text-xl">🍅</span>
+      </div>
+
+      <MealSlot
+        id={`${dayIndex}-dessert`}
+        type="dessert"
+        item={slots.dessert}
+        locked={locked}
+        onClear={() => onClear(dayIndex, 'dessert')}
+      />
     </div>
   )
 }

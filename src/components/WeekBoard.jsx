@@ -21,7 +21,6 @@ export default function WeekBoard({ plan, pools, onClear }) {
             slots={{
               main:    resolveItem(day.main,    pools.mains),
               side:    resolveItem(day.side,    pools.sides),
-              veggie:  resolveItem(day.veggie,  pools.veggies),
               dessert: resolveItem(day.dessert, pools.desserts),
             }}
             onClear={onClear}

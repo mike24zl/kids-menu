@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { DEFAULT_MAINS, DEFAULT_SIDES, DEFAULT_VEGGIES, DEFAULT_DESSERTS } from '../data/defaults'
+import { DEFAULT_MAINS, DEFAULT_SIDES, DEFAULT_DESSERTS } from '../data/defaults'
 
-const ALL_DEFAULTS = [...DEFAULT_MAINS, ...DEFAULT_SIDES, ...DEFAULT_VEGGIES, ...DEFAULT_DESSERTS]
+const ALL_DEFAULTS = [...DEFAULT_MAINS, ...DEFAULT_SIDES, ...DEFAULT_DESSERTS]
 
 function toDb({ id: _id, nameHe, imageUrl, ...rest }) {
   return {
@@ -84,7 +84,6 @@ export function useDishes(userId) {
   return {
     mains:    makePool('main'),
     sides:    makePool('side'),
-    veggies:  makePool('veggie'),
     desserts: makePool('dessert'),
     loading,
   }
