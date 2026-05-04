@@ -1,5 +1,6 @@
 import { formatWeekLabel } from '../utils/dates'
 import { useLang } from '../i18n/LangContext'
+import UserMenu from './UserMenu'
 
 export default function Header({ weekStart, parentMode, onToggleParent }) {
   const { lang, switchLang, t } = useLang()
@@ -20,6 +21,8 @@ export default function Header({ weekStart, parentMode, onToggleParent }) {
       </div>
 
       <div className="flex items-center gap-2">
+        <UserMenu />
+
         {/* Language toggle */}
         <div className="flex rounded-xl overflow-hidden border-2 border-purple-200 shadow-sm">
           {['en', 'he'].map(l => (

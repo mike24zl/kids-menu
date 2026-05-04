@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.vercel.kids_menu_htq37lbt0_mike24zl_6923s_projects.twa",
+    "sha256_cert_fingerprints": [
+      "8E:6B:38:22:2B:10:49:68:19:27:13:29:63:0B:AD:1E:EA:9C:7E:47:B0:3C:AD:14:41:EE:D7:E3:9A:F6:8D:3F"
+    ]
+  }
+}]

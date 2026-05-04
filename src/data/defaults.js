@@ -9,7 +9,7 @@ export const DEFAULT_MAINS = [
   { id: 'm8', name: 'Shakshuka',        nameHe: 'שקשוקה',       emoji: '🍳', type: 'main' },
   { id: 'm9', name: 'Omelette',         nameHe: 'אומלט',        emoji: '🥚', type: 'main' },
   { id: 'm10', name: 'Boiled Egg',      nameHe: 'ביצה קשה',    emoji: '🥚', type: 'main' },
-  { id: 'm11', name: 'Buttered Toast',  nameHe: 'טוסט עם חמאה', emoji: '🍞', type: 'main' },
+  { id: 'm11', name: 'Buttered Toast',  nameHe: 'צנים עם חמאה', emoji: '🍞', type: 'main' },
   { id: 'm12', name: 'Pastrami',        nameHe: 'פסטרמה',       emoji: '🥓', type: 'main' },
 ]
 

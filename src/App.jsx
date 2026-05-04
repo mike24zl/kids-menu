@@ -15,7 +15,9 @@ import WeekBoard from './components/WeekBoard'
 import PoolSection from './components/PoolSection'
 import ParentPanel from './components/ParentPanel'
 import ConfettiOverlay from './components/ConfettiOverlay'
+import AuthGate from './components/AuthGate'
 
+import { useAuth } from './hooks/useAuth'
 import { useWeekPlan } from './hooks/useWeekPlan'
 import { useDishes } from './hooks/useDishes'
 import { useSound } from './hooks/useSound'
@@ -25,8 +27,24 @@ import { isPast, getWeekDays } from './utils/dates'
 const SLOT_TYPES = ['main', 'side', 'veggie', 'dessert']
 
 export default function App() {
-  const { plan, setSlot, clearSlot, resetWeek, dessertCount, mainCount } = useWeekPlan()
-  const { mains, sides, veggies, desserts } = useDishes()
+  const { user, loading: authLoading } = useAuth()
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-50 to-amber-50">
+        <span className="text-6xl animate-bounce">🍽️</span>
+      </div>
+    )
+  }
+
+  if (!user) return <AuthGate />
+
+  return <AppInner userId={user.id} />
+}
+
+function AppInner({ userId }) {
+  const { plan, setSlot, clearSlot, resetWeek, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId)
+  const { mains, sides, veggies, desserts, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
 
@@ -41,10 +59,8 @@ export default function App() {
     useSensor(TouchSensor,   { activationConstraint: { delay: 100, tolerance: 5 } }),
   )
 
-  // Pools keyed by type for easy lookup
   const pools = { main: mains, side: sides, veggie: veggies, dessert: desserts }
 
-  // Placed IDs per pool for glow effect
   const placedIds = {
     main:    new Set(Object.values(plan.days).map(d => d.main).filter(Boolean)),
     side:    new Set(Object.values(plan.days).map(d => d.side).filter(Boolean)),
@@ -72,13 +88,9 @@ export default function App() {
     const dayIndex = Number(parts[0])
     const slotType = parts[1]
 
-    // Type mismatch
     if (dragType !== slotType) { playBoing(); return }
-
-    // Locked day
     if (isPast(getWeekDays(plan.weekStart)[dayIndex])) { playBoing(); return }
 
-    // Dessert limit
     if (slotType === 'dessert' && !plan.days[dayIndex].dessert && dessertCount >= 3) {
       playBoing()
       setOverflow(true)
@@ -89,12 +101,19 @@ export default function App() {
     setSlot(dayIndex, slotType, itemId)
     playPop()
 
-    // Confetti when all 7 mains filled
     if (slotType === 'main' && !plan.days[dayIndex].main) {
       const newCount = Object.values(plan.days).filter((d, i) => i === dayIndex ? true : d.main !== null).length
       if (newCount === 7) setTimeout(() => setShowConfetti(true), 200)
     }
   }, [plan, dessertCount, setSlot, playPop, playBoing])
+
+  if (planLoading || dishesLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-50 to-amber-50">
+        <span className="text-6xl animate-bounce">🍽️</span>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen flex flex-col gap-3 pb-6" dir={t.dir}>

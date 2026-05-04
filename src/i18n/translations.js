@@ -33,6 +33,9 @@ export const translations = {
       dessert: { label: 'Desserts',       placeholder: 'e.g. Ice Cream' },
     },
     onlyNDesserts: n => `Only ${n} desserts! 🙈`,
+    signInPrompt: 'Sign in to save your meal plans across devices',
+    signInGoogle: 'Sign in with Google',
+    signOut: 'Sign out',
   },
   he: {
     dir: 'rtl',
@@ -61,5 +64,8 @@ export const translations = {
       dessert: { label: 'קינוחים',      placeholder: 'למשל: גלידה' },
     },
     onlyNDesserts: n => `רק ${n} קינוחים! 🙈`,
+    signInPrompt: 'התחבר כדי לשמור את תפריטי השבוע בכל מכשיר',
+    signInGoogle: 'התחברות עם Google',
+    signOut: 'התנתקות',
   },
 }
