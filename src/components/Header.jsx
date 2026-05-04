@@ -20,21 +20,21 @@ export default function Header({
           </h1>
 
           {/* Week navigation */}
-          <div className="flex items-center gap-1 mt-0.5">
+          <div className="flex items-center gap-1.5 mt-0.5 flex-wrap">
             <button
               onClick={onPrevWeek}
-              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 transition-colors font-bold"
+              className="px-2 py-0.5 rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 font-nunito font-bold text-xs transition-colors"
             >
-              {t.dir === 'rtl' ? '›' : '‹'}
+              {t.prevWeek}
             </button>
             <span className="font-nunito text-sm font-bold text-orange-400">
               {formatWeekLabel(weekStart, t.locale)}
             </span>
             <button
               onClick={onNextWeek}
-              className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 transition-colors font-bold"
+              className="px-2 py-0.5 rounded-lg hover:bg-orange-100 text-orange-400 hover:text-orange-600 font-nunito font-bold text-xs transition-colors"
             >
-              {t.dir === 'rtl' ? '‹' : '›'}
+              {t.nextWeek}
             </button>
             {weekOffset !== 0 && (
               <button
