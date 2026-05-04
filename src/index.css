@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  font-family: 'Fredoka One', cursive;
+  background: linear-gradient(135deg, #FFF9C4 0%, #FFE0B2 50%, #F8BBD9 100%);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Keep emoji rendering crisp */
+.emoji {
+  font-style: normal;
+  line-height: 1;
+}
