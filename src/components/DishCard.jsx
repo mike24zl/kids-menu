@@ -9,7 +9,7 @@ export default function DishCard({ item, isPlaced }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: `${item.type}-${item.id}` })
 
   const displayName = lang === 'he' && item.nameHe ? item.nameHe : item.name
-  const style = { transform: CSS.Translate.toString(transform), zIndex: isDragging ? 999 : undefined, opacity: isDragging ? 0.7 : 1 }
+  const style = { transform: CSS.Translate.toString(transform), zIndex: isDragging ? 999 : undefined, opacity: isDragging ? 0.7 : 1, touchAction: 'none' }
 
   return (
     <motion.div
