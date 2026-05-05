@@ -132,7 +132,7 @@ function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
   )
 }
 
-export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onUpdateKid, onRemoveKid }) {
+export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onUpdateKid, onRemoveKid, onClose }) {
   const { t, lang } = useLang()
   const [tab, setTab] = useState('main')
   const [editing, setEditing] = useState(null)
@@ -159,6 +159,10 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
       <div className="sticky top-0 bg-purple-100 rounded-t-3xl px-4 py-3 flex items-center gap-3 border-b-2 border-purple-200">
         <span className="text-2xl">👨‍👩‍👧</span>
         <span className="font-fredoka text-xl text-purple-700 flex-1">{t.parentMode}</span>
+        <button onClick={onClose}
+          className="px-3 py-1.5 bg-purple-400 hover:bg-purple-500 text-white rounded-xl font-nunito font-bold text-xs transition shadow">
+          ✕
+        </button>
         <button onClick={onResetWeek}
           className="px-3 py-1.5 bg-red-400 hover:bg-red-500 text-white rounded-xl font-nunito font-bold text-xs transition shadow">
           🔄 {t.resetWeek}

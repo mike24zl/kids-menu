@@ -209,6 +209,7 @@ function AppInner({ userId }) {
             pools={pools}
             onResetWeek={resetWeek}
             onResetFoods={resetToDefaults}
+            onClose={() => setParentMode(false)}
             kids={kids}
             onAddKid={addKid}
             onUpdateKid={updateKid}
