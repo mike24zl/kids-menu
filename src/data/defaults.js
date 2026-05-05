@@ -11,6 +11,7 @@ export const DEFAULT_MAINS = [
   { id: 'm10', name: 'Boiled Egg',      nameHe: 'ביצה קשה',     emoji: '🥚', imageUrl: '/icons/boiled-egg.png',   type: 'main' },
   { id: 'm11', name: 'Buttered Toast',  nameHe: 'צנים עם חמאה', emoji: '🍞', imageUrl: '/icons/toast.png',        type: 'main' },
   { id: 'm12', name: 'Pastrami',        nameHe: 'פסטרמה',        emoji: '🥓', imageUrl: '/icons/pastrami.png',     type: 'main' },
+  { id: 'm13', name: 'Sushi',           nameHe: 'סושי',          emoji: '🍣', imageUrl: '/icons/sushi.png',        type: 'main' },
 ]
 
 export const DEFAULT_SIDES = [
