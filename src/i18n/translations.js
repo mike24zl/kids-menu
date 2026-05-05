@@ -45,6 +45,9 @@ export const translations = {
     addKid: 'Add Kid',
     kidName: "Kid's name",
     noKids: 'No kids added yet',
+    unsavedKidSwitch: 'You have unsaved changes. Save before switching kids?',
+    saveAndSwitch: 'Save & Switch',
+    discardAndSwitch: 'Discard & Switch',
   },
   he: {
     dir: 'rtl',
@@ -86,5 +89,8 @@ export const translations = {
     addKid: 'הוסף ילד',
     kidName: 'שם הילד',
     noKids: 'אין ילדים עדיין',
+    unsavedKidSwitch: 'יש שינויים שלא נשמרו. לשמור לפני המעבר לילד אחר?',
+    saveAndSwitch: 'שמור ועבור',
+    discardAndSwitch: 'בטל ועבור',
   },
 }

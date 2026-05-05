@@ -68,6 +68,26 @@ function AppInner({ userId }) {
   const [showConfetti, setShowConfetti]   = useState(false)
   const [activeTab, setActiveTab]         = useState('main')
   const [activeItem, setActiveItem]       = useState(null)
+  const [pendingKidId, setPendingKidId]   = useState(null)
+
+  function handleSelectKid(newKidId) {
+    if (isDirty) {
+      setPendingKidId(newKidId)
+    } else {
+      setSelectedKidId(newKidId)
+    }
+  }
+
+  async function confirmSaveAndSwitch() {
+    await save()
+    setSelectedKidId(pendingKidId)
+    setPendingKidId(null)
+  }
+
+  function confirmDiscardAndSwitch() {
+    setSelectedKidId(pendingKidId)
+    setPendingKidId(null)
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -144,7 +164,7 @@ function AppInner({ userId }) {
         saving={saving}
         kids={kids}
         selectedKidId={kidId}
-        onSelectKid={setSelectedKidId}
+        onSelectKid={handleSelectKid}
       />
 
       <DndContext
@@ -201,6 +221,33 @@ function AppInner({ userId }) {
           <ConfettiOverlay show={showConfetti} onDismiss={() => setShowConfetti(false)} />
         )}
       </AnimatePresence>
+
+      {pendingKidId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6">
+          <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-xs flex flex-col gap-4">
+            <p className="font-fredoka text-lg text-center text-gray-700">{t.unsavedKidSwitch}</p>
+            <button
+              onClick={confirmSaveAndSwitch}
+              disabled={saving}
+              className="py-2.5 rounded-2xl bg-green-500 hover:bg-green-600 disabled:opacity-60 text-white font-fredoka text-base transition shadow"
+            >
+              {saving ? t.saving : t.saveAndSwitch}
+            </button>
+            <button
+              onClick={confirmDiscardAndSwitch}
+              className="py-2.5 rounded-2xl bg-orange-400 hover:bg-orange-500 text-white font-fredoka text-base transition shadow"
+            >
+              {t.discardAndSwitch}
+            </button>
+            <button
+              onClick={() => setPendingKidId(null)}
+              className="py-2 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-fredoka text-base transition"
+            >
+              {t.cancel}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
