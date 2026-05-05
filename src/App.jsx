@@ -53,7 +53,7 @@ function AppInner({ userId }) {
   const [weekOffset, setWeekOffset] = useState(0)
   const weekStart = weekStartFromOffset(weekOffset)
 
-  const { kids, addKid, removeKid, loading: kidsLoading } = useKids(userId)
+  const { kids, addKid, updateKid, removeKid, loading: kidsLoading } = useKids(userId)
   const [selectedKidId, setSelectedKidId] = useState('default')
 
   const kidId = kids.length > 0 ? (kids.find(k => k.id === selectedKidId) ? selectedKidId : kids[0].id) : 'default'
@@ -211,6 +211,7 @@ function AppInner({ userId }) {
             onResetFoods={resetToDefaults}
             kids={kids}
             onAddKid={addKid}
+            onUpdateKid={updateKid}
             onRemoveKid={removeKid}
           />
         )}

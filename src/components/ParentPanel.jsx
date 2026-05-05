@@ -5,7 +5,18 @@ import { POOL_COLORS } from '../data/defaults'
 import { useLang } from '../i18n/LangContext'
 import { POOL_TABS } from '../i18n/translations'
 
-const KID_ICONS = ['🧒','👦','👧','👶','🌟','⭐','🦄','🐱','🐶','🦊','🐸','🦁','🐼','🐻','🦋','🌈','🎈','🚀','🎸','⚽']
+const KID_ICONS = [
+  // Kids
+  '🧒','👦','👧','👶',
+  // Animals
+  '🐱','🐶','🐰','🦊','🐻','🐼','🐨','🐯','🦁','🐮','🐷','🐸',
+  '🐵','🦆','🦉','🦇','🐺','🦄','🐢','🐍','🦋','🐙','🦈','🐳',
+  '🐅','🦓','🦒','🐘','🦔','🐇','🦥','🦦','🐿','🦜','🦩','🐊',
+  // K-pop demon hunters
+  '✨','💫','🌟','⭐','💥','🔥','❄️','⚡','🌙','🌈',
+  '🔮','🗡️','⚔️','🔱','💀','🧿','👑','💜','🖤','🩷',
+  '🧙‍♀️','🧝‍♀️','🧚‍♀️','🧜‍♀️','🦸‍♀️','🦹','🧛','🐉','🌸','💎',
+]
 
 function ItemRow({ item, onEdit, onDelete, lang }) {
   const displayName = lang === 'he' && item.nameHe ? item.nameHe : item.name
@@ -22,10 +33,25 @@ function ItemRow({ item, onEdit, onDelete, lang }) {
   )
 }
 
-function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
+function IconPicker({ selected, onPick }) {
+  return (
+    <div className="flex flex-wrap gap-1.5 mt-1">
+      {KID_ICONS.map(em => (
+        <button
+          key={em}
+          onClick={() => onPick(em)}
+          className={`text-xl w-9 h-9 rounded-xl transition ${selected === em ? 'bg-amber-200 ring-2 ring-amber-400' : 'hover:bg-amber-50'}`}
+        >{em}</button>
+      ))}
+    </div>
+  )
+}
+
+function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [icon, setIcon] = useState('🧒')
+  const [editingId, setEditingId] = useState(null)
 
   async function handleAdd() {
     const trimmed = name.trim()
@@ -36,6 +62,11 @@ function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
     setAdding(false)
   }
 
+  async function handleIconPick(kidId, newIcon) {
+    await onUpdateKid(kidId, { icon: newIcon })
+    setEditingId(null)
+  }
+
   return (
     <div className="mb-4">
       <div className="font-fredoka text-sm text-purple-600 mb-2 flex items-center gap-2">
@@ -44,13 +75,24 @@ function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
 
       <div className="flex flex-col gap-2 mb-2">
         {kids.map(kid => (
-          <div key={kid.id} className="flex items-center gap-2 p-2 bg-amber-50 rounded-xl border border-amber-200">
-            <span className="text-2xl">{kid.icon}</span>
-            <span className="font-fredoka text-base flex-1 text-amber-800">{kid.name}</span>
-            <button
-              onClick={() => onRemoveKid(kid.id)}
-              className="text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition"
-            >🗑️</button>
+          <div key={kid.id}>
+            <div className="flex items-center gap-2 p-2 bg-amber-50 rounded-xl border border-amber-200">
+              <button
+                onClick={() => setEditingId(editingId === kid.id ? null : kid.id)}
+                className="text-2xl leading-none hover:scale-110 transition-transform"
+                title={t.changeIcon}
+              >{kid.icon}</button>
+              <span className="font-fredoka text-base flex-1 text-amber-800">{kid.name}</span>
+              <button
+                onClick={() => onRemoveKid(kid.id)}
+                className="text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition"
+              >🗑️</button>
+            </div>
+            {editingId === kid.id && (
+              <div className="bg-white rounded-xl border-2 border-amber-200 p-3 mt-1">
+                <IconPicker selected={kid.icon} onPick={em => handleIconPick(kid.id, em)} />
+              </div>
+            )}
           </div>
         ))}
         {kids.length === 0 && (
@@ -68,15 +110,7 @@ function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
             autoFocus
           />
-          <div className="flex flex-wrap gap-1.5">
-            {KID_ICONS.map(em => (
-              <button
-                key={em}
-                onClick={() => setIcon(em)}
-                className={`text-xl w-9 h-9 rounded-xl transition ${icon === em ? 'bg-amber-200 ring-2 ring-amber-400' : 'hover:bg-amber-50'}`}
-              >{em}</button>
-            ))}
-          </div>
+          <IconPicker selected={icon} onPick={setIcon} />
           <div className="flex gap-2 mt-1">
             <button
               onClick={handleAdd}
@@ -98,7 +132,7 @@ function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
   )
 }
 
-export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onRemoveKid }) {
+export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onUpdateKid, onRemoveKid }) {
   const { t, lang } = useLang()
   const [tab, setTab] = useState('main')
   const [editing, setEditing] = useState(null)
@@ -154,7 +188,7 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
 
       <div className="px-4 py-3">
         {/* Kids section */}
-        <KidsSection kids={kids} onAddKid={onAddKid} onRemoveKid={onRemoveKid} t={t} />
+        <KidsSection kids={kids} onAddKid={onAddKid} onUpdateKid={onUpdateKid} onRemoveKid={onRemoveKid} t={t} />
 
         <div className="border-t-2 border-purple-200 mb-3" />
 

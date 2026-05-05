@@ -39,10 +39,20 @@ export function useKids(userId) {
     return data
   }
 
+  async function updateKid(id, patch) {
+    const { data } = await supabase
+      .from('kids')
+      .update(patch)
+      .eq('id', id)
+      .select()
+      .single()
+    if (data) setKids(prev => prev.map(k => k.id === id ? data : k))
+  }
+
   async function removeKid(id) {
     await supabase.from('kids').delete().eq('id', id)
     setKids(prev => prev.filter(k => k.id !== id))
   }
 
-  return { kids, addKid, removeKid, loading }
+  return { kids, addKid, updateKid, removeKid, loading }
 }
