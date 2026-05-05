@@ -48,7 +48,19 @@ export function useDishes(userId) {
       .order('created_at')
       .then(async ({ data }) => {
         if (data && data.length > 0) {
-          setDishes(data.map(d => enrichWithIcon(fromDb(d))))
+          const existing = data.map(d => enrichWithIcon(fromDb(d)))
+          const existingKeys = new Set(existing.map(d => `${d.type}:${d.name}`))
+          const missing = ALL_DEFAULTS.filter(d => !existingKeys.has(`${d.type}:${d.name}`))
+          if (missing.length > 0) {
+            const rows = missing.map(d => ({ ...toDb(d), user_id: userId }))
+            const { data: inserted } = await supabase
+              .from('user_dishes')
+              .insert(rows)
+              .select()
+            setDishes([...existing, ...(inserted ?? []).map(fromDb)])
+          } else {
+            setDishes(existing)
+          }
         } else {
           // First login: seed defaults
           const rows = ALL_DEFAULTS.map(d => ({ ...toDb(d), user_id: userId }))
