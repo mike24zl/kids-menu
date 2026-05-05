@@ -4,6 +4,20 @@ import { DEFAULT_MAINS, DEFAULT_SIDES, DEFAULT_DESSERTS } from '../data/defaults
 
 const ALL_DEFAULTS = [...DEFAULT_MAINS, ...DEFAULT_SIDES, ...DEFAULT_DESSERTS]
 
+// Map type:name → imageUrl so existing DB rows (seeded before icons existed)
+// get their icon applied in memory without needing a DB migration.
+const DEFAULT_IMAGE_MAP = Object.fromEntries(
+  ALL_DEFAULTS
+    .filter(d => d.imageUrl)
+    .map(d => [`${d.type}:${d.name}`, d.imageUrl])
+)
+
+function enrichWithIcon(dish) {
+  if (dish.imageUrl) return dish
+  const url = DEFAULT_IMAGE_MAP[`${dish.type}:${dish.name}`]
+  return url ? { ...dish, imageUrl: url } : dish
+}
+
 function toDb({ id: _id, nameHe, imageUrl, ...rest }) {
   return {
     ...rest,
@@ -34,7 +48,7 @@ export function useDishes(userId) {
       .order('created_at')
       .then(async ({ data }) => {
         if (data && data.length > 0) {
-          setDishes(data.map(fromDb))
+          setDishes(data.map(d => enrichWithIcon(fromDb(d))))
         } else {
           // First login: seed defaults
           const rows = ALL_DEFAULTS.map(d => ({ ...toDb(d), user_id: userId }))
