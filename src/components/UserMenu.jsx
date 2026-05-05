@@ -21,9 +21,10 @@ export default function UserMenu() {
       )}
       <button
         onClick={signOut}
-        className="px-3 py-1.5 rounded-xl font-nunito font-bold text-sm bg-white text-gray-600 border-2 border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all"
+        className="px-2.5 py-1.5 rounded-xl font-nunito font-bold text-sm bg-white text-gray-600 border-2 border-gray-200 hover:bg-red-50 hover:border-red-300 hover:text-red-600 transition-all"
       >
-        {t.signOut}
+        <span className="hidden sm:inline">{t.signOut}</span>
+        <span className="sm:hidden">✕</span>
       </button>
     </div>
   )
