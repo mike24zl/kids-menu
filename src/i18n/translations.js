@@ -41,6 +41,10 @@ export const translations = {
     signInPrompt: 'Sign in to save your meal plans across devices',
     signInGoogle: 'Sign in with Google',
     signOut: 'Sign out',
+    kids: 'Kids',
+    addKid: 'Add Kid',
+    kidName: "Kid's name",
+    noKids: 'No kids added yet',
   },
   he: {
     dir: 'rtl',
@@ -78,5 +82,9 @@ export const translations = {
     signInPrompt: 'התחבר כדי לשמור את תפריטי השבוע בכל מכשיר',
     signInGoogle: 'התחברות עם Google',
     signOut: 'התנתקות',
+    kids: 'ילדים',
+    addKid: 'הוסף ילד',
+    kidName: 'שם הילד',
+    noKids: 'אין ילדים עדיין',
   },
 }

@@ -1,12 +1,14 @@
 import { formatWeekLabel } from '../utils/dates'
 import { useLang } from '../i18n/LangContext'
 import UserMenu from './UserMenu'
+import KidSelector from './KidSelector'
 
 export default function Header({
   weekStart, weekOffset,
   onPrevWeek, onNextWeek, onToday,
   parentMode, onToggleParent,
   onSave, isDirty, saving,
+  kids, selectedKidId, onSelectKid,
 }) {
   const { lang, switchLang, t } = useLang()
 
@@ -101,6 +103,17 @@ export default function Header({
           </button>
         )}
       </div>
+
+      {/* Row 4: kid selector (only when kids exist) */}
+      {kids && kids.length > 0 && (
+        <div className="flex items-center justify-center">
+          <KidSelector
+            kids={kids}
+            selectedKidId={selectedKidId}
+            onSelect={onSelectKid}
+          />
+        </div>
+      )}
 
     </header>
   )

@@ -5,6 +5,8 @@ import { POOL_COLORS } from '../data/defaults'
 import { useLang } from '../i18n/LangContext'
 import { POOL_TABS } from '../i18n/translations'
 
+const KID_ICONS = ['🧒','👦','👧','👶','🌟','⭐','🦄','🐱','🐶','🦊','🐸','🦁','🐼','🐻','🦋','🌈','🎈','🚀','🎸','⚽']
+
 function ItemRow({ item, onEdit, onDelete, lang }) {
   const displayName = lang === 'he' && item.nameHe ? item.nameHe : item.name
   return (
@@ -20,10 +22,86 @@ function ItemRow({ item, onEdit, onDelete, lang }) {
   )
 }
 
-export default function ParentPanel({ pools, onResetWeek, onResetFoods }) {
+function KidsSection({ kids, onAddKid, onRemoveKid, t }) {
+  const [adding, setAdding] = useState(false)
+  const [name, setName] = useState('')
+  const [icon, setIcon] = useState('🧒')
+
+  async function handleAdd() {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    await onAddKid({ name: trimmed, icon })
+    setName('')
+    setIcon('🧒')
+    setAdding(false)
+  }
+
+  return (
+    <div className="mb-4">
+      <div className="font-fredoka text-sm text-purple-600 mb-2 flex items-center gap-2">
+        <span>👨‍👩‍👧</span> {t.kids}
+      </div>
+
+      <div className="flex flex-col gap-2 mb-2">
+        {kids.map(kid => (
+          <div key={kid.id} className="flex items-center gap-2 p-2 bg-amber-50 rounded-xl border border-amber-200">
+            <span className="text-2xl">{kid.icon}</span>
+            <span className="font-fredoka text-base flex-1 text-amber-800">{kid.name}</span>
+            <button
+              onClick={() => onRemoveKid(kid.id)}
+              className="text-red-400 hover:text-red-600 px-2 py-1 rounded-lg hover:bg-red-50 transition"
+            >🗑️</button>
+          </div>
+        ))}
+        {kids.length === 0 && (
+          <p className="text-center text-gray-400 font-fredoka py-2 text-sm">{t.noKids}</p>
+        )}
+      </div>
+
+      {adding ? (
+        <div className="bg-white rounded-xl border-2 border-amber-200 p-3 flex flex-col gap-2">
+          <input
+            className="w-full border-2 border-gray-200 rounded-xl px-3 py-1.5 font-fredoka text-base focus:outline-none focus:border-amber-400"
+            placeholder={t.kidName}
+            value={name}
+            onChange={e => setName(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleAdd()}
+            autoFocus
+          />
+          <div className="flex flex-wrap gap-1.5">
+            {KID_ICONS.map(em => (
+              <button
+                key={em}
+                onClick={() => setIcon(em)}
+                className={`text-xl w-9 h-9 rounded-xl transition ${icon === em ? 'bg-amber-200 ring-2 ring-amber-400' : 'hover:bg-amber-50'}`}
+              >{em}</button>
+            ))}
+          </div>
+          <div className="flex gap-2 mt-1">
+            <button
+              onClick={handleAdd}
+              className="flex-1 py-1.5 bg-green-400 hover:bg-green-500 text-white rounded-xl font-fredoka text-sm transition"
+            >{t.save}</button>
+            <button
+              onClick={() => { setAdding(false); setName(''); setIcon('🧒') }}
+              className="flex-1 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-xl font-fredoka text-sm transition"
+            >{t.cancel}</button>
+          </div>
+        </div>
+      ) : (
+        <button
+          onClick={() => setAdding(true)}
+          className="w-full py-1.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-white font-fredoka text-sm transition shadow"
+        >➕ {t.addKid}</button>
+      )}
+    </div>
+  )
+}
+
+export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onRemoveKid }) {
   const { t, lang } = useLang()
   const [tab, setTab] = useState('main')
-  const [editing, setEditing] = useState(null) // null | 'new' | { item }
+  const [editing, setEditing] = useState(null)
   const [confirmingReset, setConfirmingReset] = useState(false)
 
   const pool = pools[tab]
@@ -75,6 +153,11 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods }) {
       </div>
 
       <div className="px-4 py-3">
+        {/* Kids section */}
+        <KidsSection kids={kids} onAddKid={onAddKid} onRemoveKid={onRemoveKid} t={t} />
+
+        <div className="border-t-2 border-purple-200 mb-3" />
+
         {/* Pool tabs */}
         <div className="flex gap-2 mb-4">
           {POOL_TABS.map(({ type, emoji }) => (

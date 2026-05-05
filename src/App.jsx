@@ -20,6 +20,7 @@ import AuthGate from './components/AuthGate'
 import { useAuth } from './hooks/useAuth'
 import { useWeekPlan } from './hooks/useWeekPlan'
 import { useDishes } from './hooks/useDishes'
+import { useKids } from './hooks/useKids'
 import { useSound } from './hooks/useSound'
 import { useLang } from './i18n/LangContext'
 import { isPast, getWeekDays, getWeekStart } from './utils/dates'
@@ -52,7 +53,12 @@ function AppInner({ userId }) {
   const [weekOffset, setWeekOffset] = useState(0)
   const weekStart = weekStartFromOffset(weekOffset)
 
-  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart)
+  const { kids, addKid, removeKid, loading: kidsLoading } = useKids(userId)
+  const [selectedKidId, setSelectedKidId] = useState('default')
+
+  const kidId = kids.length > 0 ? (kids.find(k => k.id === selectedKidId) ? selectedKidId : kids[0].id) : 'default'
+
+  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart, kidId)
   const { mains, sides, desserts, resetToDefaults, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
@@ -115,7 +121,7 @@ function AppInner({ userId }) {
     }
   }, [plan, dessertCount, setSlot, playPop, playBoing])
 
-  if (planLoading || dishesLoading) {
+  if (planLoading || dishesLoading || kidsLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-50 to-amber-50">
         <span className="text-6xl animate-bounce">🍽️</span>
@@ -136,6 +142,9 @@ function AppInner({ userId }) {
         onSave={save}
         isDirty={isDirty}
         saving={saving}
+        kids={kids}
+        selectedKidId={kidId}
+        onSelectKid={setSelectedKidId}
       />
 
       <DndContext
@@ -180,6 +189,9 @@ function AppInner({ userId }) {
             pools={pools}
             onResetWeek={resetWeek}
             onResetFoods={resetToDefaults}
+            kids={kids}
+            onAddKid={addKid}
+            onRemoveKid={removeKid}
           />
         )}
       </AnimatePresence>

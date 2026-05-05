@@ -7,7 +7,7 @@ function emptyDays() {
   return Object.fromEntries(Array.from({ length: 7 }, (_, i) => [i, { ...EMPTY_DAY }]))
 }
 
-export function useWeekPlan(userId, weekStart) {
+export function useWeekPlan(userId, weekStart, kidId = 'default') {
   const [plan, setPlan] = useState({ weekStart, days: emptyDays() })
   const [loading, setLoading] = useState(true)
   const [isDirty, setDirty] = useState(false)
@@ -23,6 +23,7 @@ export function useWeekPlan(userId, weekStart) {
       .from('week_plans')
       .select('days')
       .eq('user_id', userId)
+      .eq('kid_id', kidId)
       .eq('week_start', weekStart)
       .maybeSingle()
       .then(({ data }) => {
@@ -35,7 +36,7 @@ export function useWeekPlan(userId, weekStart) {
         }
         setLoading(false)
       })
-  }, [userId, weekStart])
+  }, [userId, weekStart, kidId])
 
   function setSlot(dayIndex, type, itemId) {
     setPlan(prev => ({
@@ -55,8 +56,8 @@ export function useWeekPlan(userId, weekStart) {
   async function save() {
     setSaving(true)
     await supabase.from('week_plans').upsert(
-      { user_id: userId, week_start: weekStart, days: plan.days },
-      { onConflict: 'user_id,week_start' }
+      { user_id: userId, kid_id: kidId, week_start: weekStart, days: plan.days },
+      { onConflict: 'user_id,kid_id,week_start' }
     )
     setSaving(false)
     setDirty(false)
