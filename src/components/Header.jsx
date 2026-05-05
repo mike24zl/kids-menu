@@ -11,17 +11,18 @@ export default function Header({
   const { lang, switchLang, t } = useLang()
 
   return (
-    <header className="flex flex-col gap-2 px-3 py-2.5 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md mx-2 mt-2">
+    <header className="flex flex-col gap-2 px-3 py-3 bg-white/60 backdrop-blur-sm rounded-2xl shadow-md mx-2 mt-2">
 
-      {/* Row 1: logo + title | buttons */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <span className="text-3xl shrink-0">🍽️</span>
-          <h1 className="font-fredoka text-xl text-orange-600 leading-tight truncate">
-            {t.title}
-          </h1>
-        </div>
+      {/* Row 1: title full width */}
+      <div className="flex items-center justify-center gap-2">
+        <span className="text-3xl">🍽️</span>
+        <h1 className="font-fredoka text-2xl text-orange-600 leading-tight">
+          {t.title}
+        </h1>
+      </div>
 
+      {/* Row 2: buttons */}
+      <div className="flex items-center justify-center gap-1.5">
         <div className="flex items-center gap-1.5 shrink-0">
           <UserMenu />
 
@@ -71,7 +72,7 @@ export default function Header({
         </div>
       </div>
 
-      {/* Row 2: week navigation */}
+      {/* Row 3: week navigation */}
       <div className="flex items-center justify-center gap-2 flex-wrap">
         <button
           onClick={onPrevWeek}
