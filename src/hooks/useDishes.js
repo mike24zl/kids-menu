@@ -86,6 +86,13 @@ export function useDishes(userId) {
     setDishes(prev => prev.filter(d => d.id !== id))
   }
 
+  async function resetToDefaults() {
+    await supabase.from('user_dishes').delete().eq('user_id', userId)
+    const rows = ALL_DEFAULTS.map(d => ({ ...toDb(d), user_id: userId }))
+    const { data: inserted } = await supabase.from('user_dishes').insert(rows).select()
+    setDishes((inserted ?? []).map(fromDb))
+  }
+
   function makePool(type) {
     return {
       items: dishes.filter(d => d.type === type),
@@ -99,6 +106,7 @@ export function useDishes(userId) {
     mains:    makePool('main'),
     sides:    makePool('side'),
     desserts: makePool('dessert'),
+    resetToDefaults,
     loading,
   }
 }

@@ -53,7 +53,7 @@ function AppInner({ userId }) {
   const weekStart = weekStartFromOffset(weekOffset)
 
   const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart)
-  const { mains, sides, desserts, loading: dishesLoading } = useDishes(userId)
+  const { mains, sides, desserts, resetToDefaults, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
 
@@ -179,6 +179,7 @@ function AppInner({ userId }) {
           <ParentPanel
             pools={pools}
             onResetWeek={resetWeek}
+            onResetFoods={resetToDefaults}
           />
         )}
       </AnimatePresence>

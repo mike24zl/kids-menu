@@ -20,10 +20,11 @@ function ItemRow({ item, onEdit, onDelete, lang }) {
   )
 }
 
-export default function ParentPanel({ pools, onResetWeek }) {
+export default function ParentPanel({ pools, onResetWeek, onResetFoods }) {
   const { t, lang } = useLang()
   const [tab, setTab] = useState('main')
   const [editing, setEditing] = useState(null) // null | 'new' | { item }
+  const [confirmingReset, setConfirmingReset] = useState(false)
 
   const pool = pools[tab]
 
@@ -50,6 +51,27 @@ export default function ParentPanel({ pools, onResetWeek }) {
           className="px-3 py-1.5 bg-red-400 hover:bg-red-500 text-white rounded-xl font-nunito font-bold text-xs transition shadow">
           🔄 {t.resetWeek}
         </button>
+
+        {confirmingReset ? (
+          <div className="flex items-center gap-1.5">
+            <span className="font-nunito text-xs text-red-700 font-bold">{t.confirmResetFoods}</span>
+            <button
+              onClick={() => { onResetFoods(); setConfirmingReset(false) }}
+              className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-nunito font-bold text-xs transition shadow">
+              ✓
+            </button>
+            <button
+              onClick={() => setConfirmingReset(false)}
+              className="px-2.5 py-1.5 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-xl font-nunito font-bold text-xs transition">
+              ✕
+            </button>
+          </div>
+        ) : (
+          <button onClick={() => setConfirmingReset(true)}
+            className="px-3 py-1.5 bg-orange-400 hover:bg-orange-500 text-white rounded-xl font-nunito font-bold text-xs transition shadow">
+            🍽️ {t.resetFoods}
+          </button>
+        )}
       </div>
 
       <div className="px-4 py-3">
