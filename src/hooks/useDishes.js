@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
 import { DEFAULT_MAINS, DEFAULT_SIDES, DEFAULT_DESSERTS } from '../data/defaults'
+import { LIMITS, sanitizeText, isValidImageUrl } from '../utils/validation'
 
 const ALL_DEFAULTS = [...DEFAULT_MAINS, ...DEFAULT_SIDES, ...DEFAULT_DESSERTS]
 
@@ -75,18 +76,24 @@ export function useDishes(userId) {
   }, [userId])
 
   async function add(item) {
+    const typeCount = dishes.filter(d => d.type === item.type).length
+    if (typeCount >= LIMITS.MAX_FOODS_PER_TYPE) return
+    const safe = { ...item, name: sanitizeText(item.name) }
+    if (safe.imageUrl && !isValidImageUrl(safe.imageUrl)) delete safe.imageUrl
     const { data } = await supabase
       .from('user_dishes')
-      .insert({ ...toDb(item), user_id: userId })
+      .insert({ ...toDb(safe), user_id: userId })
       .select()
       .single()
     if (data) setDishes(prev => [...prev, fromDb(data)])
   }
 
   async function update(id, patch) {
+    const safe = { ...patch, name: patch.name ? sanitizeText(patch.name) : patch.name }
+    if (safe.imageUrl && !isValidImageUrl(safe.imageUrl)) delete safe.imageUrl
     const { data } = await supabase
       .from('user_dishes')
-      .update(toDb(patch))
+      .update(toDb(safe))
       .eq('id', id)
       .select()
       .single()

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
+import { LIMITS, sanitizeText } from '../utils/validation'
 
 export function useKids(userId) {
   const [kids, setKids] = useState([])
@@ -20,10 +21,12 @@ export function useKids(userId) {
   }, [userId])
 
   async function addKid({ name, icon }) {
+    const safeName = sanitizeText(name).slice(0, LIMITS.MAX_KID_NAME_LENGTH)
+    if (!safeName || kids.length >= LIMITS.MAX_KIDS) return null
     const isFirst = kids.length === 0
     const { data } = await supabase
       .from('kids')
-      .insert({ user_id: userId, name, icon })
+      .insert({ user_id: userId, name: safeName, icon })
       .select()
       .single()
     if (!data) return null

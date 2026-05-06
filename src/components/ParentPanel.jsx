@@ -4,6 +4,7 @@ import DishForm from './DishForm'
 import { POOL_COLORS } from '../data/defaults'
 import { useLang } from '../i18n/LangContext'
 import { POOL_TABS } from '../i18n/translations'
+import { LIMITS, sanitizeText } from '../utils/validation'
 
 const KID_ICONS = [
   // Kids
@@ -53,9 +54,12 @@ function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
   const [icon, setIcon] = useState('🧒')
   const [editingId, setEditingId] = useState(null)
 
+  const nameTooLong = name.trim().length > LIMITS.MAX_KID_NAME_LENGTH
+  const atMaxKids   = kids.length >= LIMITS.MAX_KIDS
+
   async function handleAdd() {
-    const trimmed = name.trim()
-    if (!trimmed) return
+    const trimmed = sanitizeText(name.trim())
+    if (!trimmed || trimmed.length > LIMITS.MAX_KID_NAME_LENGTH || atMaxKids) return
     await onAddKid({ name: trimmed, icon })
     setName('')
     setIcon('🧒')
@@ -103,18 +107,24 @@ function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
       {adding ? (
         <div className="bg-white rounded-xl border-2 border-amber-200 p-3 flex flex-col gap-2">
           <input
-            className="w-full border-2 border-gray-200 rounded-xl px-3 py-1.5 font-fredoka text-base focus:outline-none focus:border-amber-400"
+            className={`w-full border-2 rounded-xl px-3 py-1.5 font-fredoka text-base focus:outline-none
+              ${nameTooLong ? 'border-red-400' : 'focus:border-amber-400 border-gray-200'}`}
             placeholder={t.kidName}
             value={name}
             onChange={e => setName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
+            maxLength={LIMITS.MAX_KID_NAME_LENGTH + 5}
             autoFocus
           />
+          {nameTooLong && (
+            <p className="text-xs text-red-400 font-nunito">{t.nameTooLong(LIMITS.MAX_KID_NAME_LENGTH)}</p>
+          )}
           <IconPicker selected={icon} onPick={setIcon} />
           <div className="flex gap-2 mt-1">
             <button
               onClick={handleAdd}
-              className="flex-1 py-1.5 bg-green-400 hover:bg-green-500 text-white rounded-xl font-fredoka text-sm transition"
+              disabled={!name.trim() || nameTooLong}
+              className="flex-1 py-1.5 bg-green-400 hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl font-fredoka text-sm transition"
             >{t.save}</button>
             <button
               onClick={() => { setAdding(false); setName(''); setIcon('🧒') }}
@@ -122,6 +132,8 @@ function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
             >{t.cancel}</button>
           </div>
         </div>
+      ) : atMaxKids ? (
+        <p className="text-center text-xs text-gray-400 font-nunito py-1">{t.maxKidsReached(LIMITS.MAX_KIDS)}</p>
       ) : (
         <button
           onClick={() => setAdding(true)}
@@ -231,10 +243,16 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
                 <p className="text-center text-gray-400 font-fredoka py-4">No items yet</p>
               )}
             </div>
-            <button onClick={() => setEditing('new')}
-              className="w-full py-2 rounded-xl bg-green-400 hover:bg-green-500 text-white font-fredoka text-base transition shadow">
-              ➕ {t.pools[tab].label}
-            </button>
+            {pool.items.length >= LIMITS.MAX_FOODS_PER_TYPE ? (
+              <p className="text-center text-xs text-gray-400 font-nunito py-1">
+                {t.maxFoodsReached(LIMITS.MAX_FOODS_PER_TYPE)}
+              </p>
+            ) : (
+              <button onClick={() => setEditing('new')}
+                className="w-full py-2 rounded-xl bg-green-400 hover:bg-green-500 text-white font-fredoka text-base transition shadow">
+                ➕ {t.pools[tab].label}
+              </button>
+            )}
           </>
         )}
       </div>
