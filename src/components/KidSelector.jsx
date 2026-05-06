@@ -1,28 +1,37 @@
 import { useState, useRef, useEffect } from 'react'
-import { useLang } from '../i18n/LangContext'
+import { createPortal } from 'react-dom'
 
 export default function KidSelector({ kids, selectedKidId, onSelect }) {
-  const { t } = useLang()
   const [open, setOpen] = useState(false)
-  const ref = useRef(null)
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 })
+  const buttonRef = useRef(null)
 
   const selected = kids.find(k => k.id === selectedKidId) ?? kids[0]
+  const canSwitch = kids.length > 1
 
   useEffect(() => {
     if (!open) return
-    function handle(e) { if (!ref.current?.contains(e.target)) setOpen(false) }
-    document.addEventListener('pointerdown', handle)
-    return () => document.removeEventListener('pointerdown', handle)
+    function handleOutside(e) {
+      if (!buttonRef.current?.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('pointerdown', handleOutside)
+    return () => document.removeEventListener('pointerdown', handleOutside)
   }, [open])
+
+  function handleToggle() {
+    if (!canSwitch) return
+    const rect = buttonRef.current.getBoundingClientRect()
+    setDropdownPos({ top: rect.bottom + 4, left: rect.left, width: rect.width })
+    setOpen(o => !o)
+  }
 
   if (!selected) return null
 
-  const canSwitch = kids.length > 1
-
   return (
-    <div className="relative flex items-center justify-center" ref={ref}>
+    <div className="relative flex items-center justify-center">
       <button
-        onClick={() => canSwitch && setOpen(o => !o)}
+        ref={buttonRef}
+        onClick={handleToggle}
         className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-fredoka text-base transition-all shadow-sm
           ${canSwitch
             ? 'bg-amber-100 hover:bg-amber-200 border-2 border-amber-300 cursor-pointer'
@@ -36,11 +45,15 @@ export default function KidSelector({ kids, selectedKidId, onSelect }) {
         )}
       </button>
 
-      {open && (
-        <div className="absolute top-full mt-1 z-50 bg-white rounded-2xl shadow-xl border-2 border-amber-200 overflow-hidden min-w-[140px]">
+      {open && createPortal(
+        <div
+          style={{ position: 'fixed', top: dropdownPos.top, left: dropdownPos.left, minWidth: Math.max(dropdownPos.width, 140) }}
+          className="z-[200] bg-white rounded-2xl shadow-2xl border-2 border-amber-200 overflow-hidden"
+        >
           {kids.map(kid => (
             <button
               key={kid.id}
+              onPointerDown={e => e.stopPropagation()}
               onClick={() => { onSelect(kid.id); setOpen(false) }}
               className={`w-full flex items-center gap-2 px-4 py-2 font-fredoka text-base transition-colors hover:bg-amber-50
                 ${kid.id === selectedKidId ? 'bg-amber-100 font-bold' : ''}`}
@@ -49,7 +62,8 @@ export default function KidSelector({ kids, selectedKidId, onSelect }) {
               <span className="text-amber-800">{kid.name}</span>
             </button>
           ))}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )
