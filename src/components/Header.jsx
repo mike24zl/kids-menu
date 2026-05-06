@@ -7,7 +7,7 @@ export default function Header({
   weekStart, weekOffset,
   onPrevWeek, onNextWeek, onToday,
   parentMode, onToggleParent,
-  onSave, isDirty, saving,
+  saveStatus,
   kids, selectedKidId, onSelectKid,
 }) {
   const { lang, switchLang, t } = useLang()
@@ -45,19 +45,12 @@ export default function Header({
             ))}
           </div>
 
-          {/* Save button */}
-          <button
-            onClick={onSave}
-            disabled={!isDirty || saving}
-            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl font-nunito font-bold text-sm transition-all shadow
-              ${isDirty && !saving
-                ? 'bg-green-500 text-white hover:bg-green-600'
-                : 'bg-white text-gray-300 border-2 border-gray-200 cursor-not-allowed'
-              }`}
-          >
-            <span>{saving ? '⏳' : '💾'}</span>
-            <span className="hidden sm:inline">{saving ? t.saving : t.save}</span>
-          </button>
+          {/* Auto-save status */}
+          <span className={`font-nunito text-xs transition-opacity duration-500 min-w-[4rem] text-center
+            ${saveStatus === 'idle' ? 'opacity-0' : 'opacity-100'}`}>
+            {saveStatus === 'saving' && <span className="text-gray-400">⏳ {t.saving}</span>}
+            {saveStatus === 'saved'  && <span className="text-green-500">✓ {t.saved}</span>}
+          </span>
 
           {/* Parent toggle */}
           <button

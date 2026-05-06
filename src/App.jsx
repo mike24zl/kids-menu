@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import {
   DndContext,
@@ -58,36 +58,34 @@ function AppInner({ userId }) {
 
   const kidId = kids.length > 0 ? (kids.find(k => k.id === selectedKidId) ? selectedKidId : kids[0].id) : 'default'
 
-  const { plan, setSlot, clearSlot, resetWeek, save, isDirty, saving, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart, kidId)
+  const { plan, setSlot, clearSlot, resetWeek, flushSave, saveStatus, dessertCount, mainCount, loading: planLoading } = useWeekPlan(userId, weekStart, kidId)
   const { mains, sides, desserts, resetToDefaults, loading: dishesLoading } = useDishes(userId)
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
 
-  const [parentMode, setParentMode]       = useState(false)
-  const [dessertOverflow, setOverflow]    = useState(false)
-  const [showConfetti, setShowConfetti]   = useState(false)
-  const [activeTab, setActiveTab]         = useState('main')
-  const [activeItem, setActiveItem]       = useState(null)
-  const [pendingKidId, setPendingKidId]   = useState(null)
+  const [parentMode, setParentMode]     = useState(false)
+  const [dessertOverflow, setOverflow]  = useState(false)
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [activeTab, setActiveTab]       = useState('main')
+  const [activeItem, setActiveItem]     = useState(null)
 
-  function handleSelectKid(newKidId) {
-    if (isDirty) {
-      setPendingKidId(newKidId)
-    } else {
-      setSelectedKidId(newKidId)
-    }
+  // Flush save on page hide (tab switch, app backgrounded)
+  const flushSaveRef = useRef(flushSave)
+  flushSaveRef.current = flushSave
+  useEffect(() => {
+    const handler = () => { if (document.visibilityState === 'hidden') flushSaveRef.current() }
+    document.addEventListener('visibilitychange', handler)
+    return () => document.removeEventListener('visibilitychange', handler)
+  }, [])
+
+  async function handleSelectKid(newKidId) {
+    await flushSave()
+    setSelectedKidId(newKidId)
   }
 
-  async function confirmSaveAndSwitch() {
-    await save()
-    setSelectedKidId(pendingKidId)
-    setPendingKidId(null)
-  }
-
-  function confirmDiscardAndSwitch() {
-    setSelectedKidId(pendingKidId)
-    setPendingKidId(null)
-  }
+  async function handlePrevWeek() { await flushSave(); setWeekOffset(o => o - 1) }
+  async function handleNextWeek() { await flushSave(); setWeekOffset(o => o + 1) }
+  async function handleToday()    { await flushSave(); setWeekOffset(0) }
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -154,14 +152,12 @@ function AppInner({ userId }) {
       <Header
         weekStart={plan.weekStart}
         weekOffset={weekOffset}
-        onPrevWeek={() => setWeekOffset(o => o - 1)}
-        onNextWeek={() => setWeekOffset(o => o + 1)}
-        onToday={() => setWeekOffset(0)}
+        onPrevWeek={handlePrevWeek}
+        onNextWeek={handleNextWeek}
+        onToday={handleToday}
         parentMode={parentMode}
         onToggleParent={() => setParentMode(p => !p)}
-        onSave={save}
-        isDirty={isDirty}
-        saving={saving}
+        saveStatus={saveStatus}
         kids={kids}
         selectedKidId={kidId}
         onSelectKid={handleSelectKid}
@@ -224,32 +220,6 @@ function AppInner({ userId }) {
         )}
       </AnimatePresence>
 
-      {pendingKidId && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6">
-          <div className="bg-white rounded-3xl shadow-2xl p-6 w-full max-w-xs flex flex-col gap-4">
-            <p className="font-fredoka text-lg text-center text-gray-700">{t.unsavedKidSwitch}</p>
-            <button
-              onClick={confirmSaveAndSwitch}
-              disabled={saving}
-              className="py-2.5 rounded-2xl bg-green-500 hover:bg-green-600 disabled:opacity-60 text-white font-fredoka text-base transition shadow"
-            >
-              {saving ? t.saving : t.saveAndSwitch}
-            </button>
-            <button
-              onClick={confirmDiscardAndSwitch}
-              className="py-2.5 rounded-2xl bg-orange-400 hover:bg-orange-500 text-white font-fredoka text-base transition shadow"
-            >
-              {t.discardAndSwitch}
-            </button>
-            <button
-              onClick={() => setPendingKidId(null)}
-              className="py-2 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-600 font-fredoka text-base transition"
-            >
-              {t.cancel}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
