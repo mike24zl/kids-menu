@@ -24,22 +24,10 @@ export default function PoolSection({ pools, placedIds, dessertCount, dessertOve
             <span className="text-2xl">{emoji}</span>
             <span className="text-xs leading-tight text-center">{t.pools[type].label}</span>
             {type === 'dessert' && (
-              <span className={`text-xs font-bold mt-0.5 ${dessertCount >= 3 ? 'text-red-500' : 'text-pink-500'}`}>
-                {dessertCount}/3
-              </span>
+              <DessertCounter count={dessertCount} max={3} overflow={dessertOverflow} />
             )}
           </button>
         ))}
-      </div>
-
-      {/* Active pool label + counter */}
-      <div className="flex items-center gap-3 px-1">
-        <span className="font-fredoka text-lg text-gray-700">
-          {POOL_TABS.find(p => p.type === activeTab)?.emoji} {t.pools[activeTab].label}
-        </span>
-        {activeTab === 'dessert' && (
-          <DessertCounter count={dessertCount} max={3} overflow={dessertOverflow} />
-        )}
       </div>
 
       {/* Cards */}
