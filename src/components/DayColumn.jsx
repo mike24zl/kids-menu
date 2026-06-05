@@ -29,18 +29,20 @@ export default function DayColumn({ dayIndex, date, slots, locked, onClear }) {
         locked={locked}
         onClear={() => onClear(dayIndex, 'main')}
       />
-      <MealSlot
-        id={`${dayIndex}-side`}
-        type="side"
-        item={slots.side}
-        locked={locked}
-        onClear={() => onClear(dayIndex, 'side')}
-      />
-
-      {/* Hardcoded veggies */}
-      <div className="rounded-xl border-2 border-green-200 bg-green-50 flex items-center justify-center gap-1.5 py-1.5 min-h-[40px]">
-        <span className="text-xl">🥒</span>
-        <span className="text-xl">🍅</span>
+      <div className="flex gap-1">
+        <div className="flex-1 min-w-0">
+          <MealSlot
+            id={`${dayIndex}-side`}
+            type="side"
+            item={slots.side}
+            locked={locked}
+            onClear={() => onClear(dayIndex, 'side')}
+          />
+        </div>
+        <div className="rounded-xl border-2 border-green-200 bg-green-50 flex flex-col items-center justify-center gap-0.5 px-1.5">
+          <span className="text-base leading-none">🥒</span>
+          <span className="text-base leading-none">🍅</span>
+        </div>
       </div>
 
       <MealSlot

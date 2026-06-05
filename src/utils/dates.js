@@ -2,7 +2,8 @@ export function getWeekStart(date = new Date()) {
   const d = new Date(date)
   d.setHours(0, 0, 0, 0)
   d.setDate(d.getDate() - d.getDay())
-  return d.toISOString().slice(0, 10)
+  const pad = n => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
 
 export function getWeekDays(weekStart) {
