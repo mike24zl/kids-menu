@@ -9,7 +9,6 @@ export const DEFAULT_MAINS = [
   { id: 'm8',  name: 'Shakshuka',       nameHe: 'שקשוקה',        emoji: '🍳', imageUrl: '/icons/shakshuka.png',    type: 'main' },
   { id: 'm9',  name: 'Omelette',        nameHe: 'אומלט',         emoji: '🥚', imageUrl: '/icons/omelette.png',     type: 'main' },
   { id: 'm10', name: 'Boiled Egg',      nameHe: 'ביצה קשה',     emoji: '🥚', imageUrl: '/icons/boiled-egg.png',   type: 'main' },
-  { id: 'm11', name: 'Buttered Toast',  nameHe: 'צנים עם חמאה', emoji: '🍞', imageUrl: '/icons/toast.png',        type: 'main' },
   { id: 'm12', name: 'Pastrami',        nameHe: 'פסטרמה',        emoji: '🥓', imageUrl: '/icons/pastrami.png',     type: 'main' },
   { id: 'm13', name: 'Sushi',           nameHe: 'סושי',          emoji: '🍣', imageUrl: '/icons/sushi.png',        type: 'main' },
 ]
@@ -22,6 +21,7 @@ export const DEFAULT_SIDES = [
   { id: 's5', name: 'Couscous',      nameHe: 'קוסקוס', emoji: '🫙', imageUrl: '/icons/couscous.png',      type: 'side' },
   { id: 's6', name: 'Sweet Potato',  nameHe: 'בטטה',   emoji: '🍠', imageUrl: '/icons/sweet-potato.png',  type: 'side' },
   { id: 's7', name: 'Bread',         nameHe: 'לחם',    emoji: '🍞', imageUrl: '/icons/bread.png',         type: 'side' },
+  { id: 's8', name: 'Buttered Toast', nameHe: 'צנים עם חמאה', emoji: '🍞', imageUrl: '/icons/toast.png', type: 'side' },
 ]
 
 export const DEFAULT_VEGGIES = [

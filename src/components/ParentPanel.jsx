@@ -215,7 +215,6 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
               className={`flex-1 py-2 rounded-xl font-fredoka text-sm transition flex flex-col items-center gap-0.5
                 ${tab === type ? 'bg-purple-500 text-white shadow' : 'bg-white text-purple-500 border-2 border-purple-200 hover:bg-purple-50'}`}>
               <span className="text-xl">{emoji}</span>
-              <span className="text-xs">{t.pools[type].label}</span>
             </button>
           ))}
         </div>
