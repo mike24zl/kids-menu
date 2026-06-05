@@ -29,19 +29,17 @@ export default function DayColumn({ dayIndex, date, slots, locked, onClear }) {
         locked={locked}
         onClear={() => onClear(dayIndex, 'main')}
       />
-      <div className="flex gap-1">
-        <div className="flex-1 min-w-0">
-          <MealSlot
-            id={`${dayIndex}-side`}
-            type="side"
-            item={slots.side}
-            locked={locked}
-            onClear={() => onClear(dayIndex, 'side')}
-          />
-        </div>
-        <div className="rounded-xl border-2 border-green-200 bg-green-50 flex flex-col items-center justify-center gap-0.5 px-1.5">
-          <span className="text-base leading-none">🥒</span>
-          <span className="text-base leading-none">🍅</span>
+      <div className="relative">
+        <MealSlot
+          id={`${dayIndex}-side`}
+          type="side"
+          item={slots.side}
+          locked={locked}
+          onClear={() => onClear(dayIndex, 'side')}
+        />
+        <div className="absolute bottom-1 right-1 flex gap-0.5 pointer-events-none">
+          <span className="text-sm leading-none">🥒</span>
+          <span className="text-sm leading-none">🍅</span>
         </div>
       </div>
 

@@ -250,7 +250,7 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
             ) : (
               <button onClick={() => setEditing('new')}
                 className="w-full py-2 rounded-xl bg-green-400 hover:bg-green-500 text-white font-fredoka text-base transition shadow">
-                ➕ {t.pools[tab].label}
+                ➕
               </button>
             )}
           </>
