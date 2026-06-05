@@ -9,10 +9,17 @@
 
 body {
   font-family: 'Fredoka One', cursive;
-  background: linear-gradient(135deg, #FFF9C4 0%, #FFE0B2 50%, #F8BBD9 100%);
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+:root, [data-theme="sunny"]  { --bg: linear-gradient(135deg, #FFF9C4 0%, #FFE0B2 50%, #F8BBD9 100%); }
+[data-theme="ocean"]         { --bg: linear-gradient(135deg, #DBEAFE 0%, #BAE6FD 50%, #A5F3FC 100%); }
+[data-theme="forest"]        { --bg: linear-gradient(135deg, #D1FAE5 0%, #BBF7D0 50%, #ECFCCB 100%); }
+[data-theme="candy"]         { --bg: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 50%, #EDE9FE 100%); }
+[data-theme="sunset"]        { --bg: linear-gradient(135deg, #FEF3C7 0%, #FED7AA 50%, #FECACA 100%); }
+
+body { background: var(--bg); }
 
 /* Keep emoji rendering crisp */
 .emoji {

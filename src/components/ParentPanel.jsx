@@ -5,6 +5,7 @@ import { POOL_COLORS } from '../data/defaults'
 import { useLang } from '../i18n/LangContext'
 import { POOL_TABS } from '../i18n/translations'
 import { LIMITS, sanitizeText } from '../utils/validation'
+import { THEMES } from '../hooks/useTheme'
 
 const KID_ICONS = [
   // Kids
@@ -144,7 +145,7 @@ function KidsSection({ kids, onAddKid, onUpdateKid, onRemoveKid, t }) {
   )
 }
 
-export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onUpdateKid, onRemoveKid, onClose }) {
+export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, onAddKid, onUpdateKid, onRemoveKid, onClose, theme, onSetTheme }) {
   const { t, lang } = useLang()
   const [tab, setTab] = useState('main')
   const [editing, setEditing] = useState(null)
@@ -203,6 +204,29 @@ export default function ParentPanel({ pools, onResetWeek, onResetFoods, kids, on
       </div>
 
       <div className="px-4 py-3">
+        {/* Theme picker */}
+        <div className="mb-4">
+          <div className="font-fredoka text-sm text-purple-600 mb-2 flex items-center gap-2">
+            <span>🎨</span> Theme
+          </div>
+          <div className="flex gap-3 justify-center">
+            {THEMES.map(({ id, emoji, gradient }) => (
+              <button
+                key={id}
+                onClick={() => onSetTheme(id)}
+                title={id}
+                className={`w-10 h-10 rounded-full border-4 transition-transform
+                  ${theme === id ? 'border-purple-500 scale-110 shadow-md' : 'border-white hover:scale-105'}`}
+                style={{ background: gradient }}
+              >
+                <span className="text-base">{emoji}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t-2 border-purple-200 mb-3" />
+
         {/* Kids section */}
         <KidsSection kids={kids} onAddKid={onAddKid} onUpdateKid={onUpdateKid} onRemoveKid={onRemoveKid} t={t} />
 

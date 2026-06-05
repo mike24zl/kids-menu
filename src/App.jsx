@@ -22,6 +22,7 @@ import { useWeekPlan } from './hooks/useWeekPlan'
 import { useDishes } from './hooks/useDishes'
 import { useKids } from './hooks/useKids'
 import { useSound } from './hooks/useSound'
+import { useTheme } from './hooks/useTheme'
 import { useLang } from './i18n/LangContext'
 import { isPast, getWeekDays, getWeekStart } from './utils/dates'
 
@@ -63,6 +64,7 @@ function AppInner({ userId }) {
   const { playPop, playBoing } = useSound()
   const { t } = useLang()
 
+  const { theme, setTheme } = useTheme()
   const [parentMode, setParentMode]     = useState(false)
   const [dessertOverflow, setOverflow]  = useState(false)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -210,6 +212,8 @@ function AppInner({ userId }) {
             onAddKid={addKid}
             onUpdateKid={updateKid}
             onRemoveKid={removeKid}
+            theme={theme}
+            onSetTheme={setTheme}
           />
         )}
       </AnimatePresence>
